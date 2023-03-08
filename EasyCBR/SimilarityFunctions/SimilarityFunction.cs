@@ -7,11 +7,15 @@ namespace EasyCBR.SimilarityFunctions
 {
     public abstract class SimilarityFunction : ISimilarityFunction
     {
-        private int _weight;
+        public int Weight { get; set; }
+        public List<int> Scores { get; set; }
 
         public SimilarityFunction(int weight = 1)
         {
-            _weight = weight;
+            Weight = weight;
+            Scores = new List<int>();
         }
+
+        public abstract void Invoke<TCase>(CBR<TCase> cbr, string propertyName) where TCase : class;
     }
 }

@@ -5,10 +5,10 @@ using System.Text;
 
 namespace EasyCBR.Contract.IStage
 {
-    public interface IRetriveStage<TEntity>
-        where TEntity : class
+    public interface IRetriveStage<TCase>
+        where TCase : class
     {
-        IReuseStage<TEntity> Reuse(ChooseType chooseType = ChooseType.Top);
-        List<TEntity> Run();
+        IReuseStage<TCase> Reuse(ChooseType chooseType = ChooseType.Top);
+        List<TCase> Run();
     }
 }

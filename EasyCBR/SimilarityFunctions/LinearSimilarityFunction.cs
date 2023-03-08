@@ -4,8 +4,8 @@ using System.Text;
 
 namespace EasyCBR.SimilarityFunctions
 {
-    public class LinearSimilarityFunction : SimilarityFunction
-    {
-        public LinearSimilarityFunction(int weight) : base(weight) { }
-    }
+    //public class LinearSimilarityFunction : SimilarityFunction
+    //{
+    //    public LinearSimilarityFunction(int weight) : base(weight) { }
+    //}
 }

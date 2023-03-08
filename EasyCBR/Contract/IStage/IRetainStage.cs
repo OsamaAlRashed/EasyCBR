@@ -4,9 +4,9 @@ using System.Text;
 
 namespace EasyCBR.Contract.IStage
 {
-    public interface IRetainStage<TEntity>
-        where TEntity : class
+    public interface IRetainStage<TCase>
+        where TCase : class
     {
-        TEntity Run();
+        TCase Run();
     }
 }

@@ -4,11 +4,11 @@ using System.Text;
 
 namespace EasyCBR.Contract.IStage
 {
-    public interface IReuseStage<TEntity>
-        where TEntity : class
+    public interface IReuseStage<TCase>
+        where TCase : class
     {
-        IReviseStage<TEntity> Revise(object correctValue);
-        TEntity Run();
+        IReviseStage<TCase> Revise(object correctValue);
+        TCase Run();
 
     }
 }

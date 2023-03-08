@@ -1,83 +1,165 @@
 ﻿using EasyCBR.Contract;
 using EasyCBR.Contract.IStage;
 using EasyCBR.Enums;
+using EasyCBR.SimilarityFunctions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using static EasyCBR.Helpers.HelperMethods;
 namespace EasyCBR
 {
-    public sealed class CBR<TEntity> :
-        IRetriveStage<TEntity>, 
-        IRetainStage<TEntity>,
-        IReuseStage<TEntity>,
-        IReviseStage<TEntity>
-        where TEntity : class
+    public sealed class CBR<TCase> :
+        IRetriveStage<TCase>,
+        IRetainStage<TCase>,
+        IReuseStage<TCase>,
+        IReviseStage<TCase>
+        where TCase : class
     {
-        private TEntity _entitiy = Activator.CreateInstance<TEntity>();
 
-        private List<TEntity> _entities = new List<TEntity>();
+        #region Properties
+        internal TCase Case { get; set; } = Activator.CreateInstance<TCase>();
 
-        private List<TEntity> _selectedEntities = new List<TEntity>();
+        internal TCase ResultCase { get; set; } = Activator.CreateInstance<TCase>();
 
-        private Dictionary<string, ISimilarityFunction> _props 
+        internal List<TCase> Cases { get; set; } = new List<TCase>();
+
+        internal List<TCase> SelectedCases { get; set; } = new List<TCase>();
+
+        internal Dictionary<string, Type> Properties { get; set; } = new Dictionary<string, Type>();
+
+        internal Dictionary<string, ISimilarityFunction> SimilarityFunctionsPerProperties { get; set; }
             = new Dictionary<string, ISimilarityFunction>();
-        
+        #endregion
+
+        #region Initlize
         private CBR() { }
 
-        public static CBR<TEntity> Create(string path)
+        public static CBR<TCase> Create(string path)
         {
-            //TODO
+            var cbr = new CBR<TCase>();
 
-            return new CBR<TEntity>();
-        }
-
-        public static CBR<TEntity> Create(List<TEntity> entities)
-            => new CBR<TEntity>
-            {
-                _entities = entities
-            };
-
-        public IRetainStage<TEntity> Retain()
-        {
-            return this;
-        }
-
-        public IRetriveStage<TEntity> Retrieve(TEntity entity, int count)
-        {
             /// ToDo
-            _selectedEntities = _entities.Take(count).ToList();
+            Init(cbr, new List<TCase>());
 
-            return this;
+            return cbr;
         }
 
-        public IReuseStage<TEntity> Reuse(ChooseType chooseType = ChooseType.Top)
+        public static CBR<TCase> Create(List<TCase> cases)
         {
-            return this;
+            var cbr = new CBR<TCase>();
+
+            Init(cbr, cases);
+
+            return cbr;
         }
 
-        public IReviseStage<TEntity> Revise(object correctValue)
+        private static void Init(CBR<TCase> cbr, List<TCase> cases)
         {
-            return this;
-        }
+            cbr.Properties = GetNameAndTypeProperties<TCase>();
+            cbr.Cases = cases;
 
-        public CBR<TEntity> SetSimilarityFunctions(params (string property, ISimilarityFunction similarityFunction) [] pairs)
-        {
-            foreach (var (property, similarityFunction) in pairs)
+            foreach (var property in cbr.Properties)
             {
-                _props.Add(property, similarityFunction);
+                cbr.SimilarityFunctionsPerProperties
+                    .Add(property.Key, new BasicSimilarityFunction());
+            }
+        }
+        #endregion
+
+        #region 4R
+        public IRetainStage<TCase> Retain()
+        {
+            ///TODO
+            
+
+            return this;
+        }
+
+        public IRetriveStage<TCase> Retrieve(TCase Case, int count)
+        {
+            if (count <= 0 || Cases.Count < count)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            this.Case = Case;
+            SelectedCases = InvokeAllSimilarityFunctions().Take(count).ToList();
+
+            return this;
+        }
+
+        public IReuseStage<TCase> Reuse(ChooseType chooseType = ChooseType.Top)
+        {
+            //ToDo
+            switch (chooseType)
+            {
+                case ChooseType.Top:
+                    ResultCase = SelectedCases.FirstOrDefault();
+                    break;
+                case ChooseType.Average:
+                    break;
+                default:
+                    break;
             }
 
             return this;
         }
 
-        List<TEntity> IRetriveStage<TEntity>.Run() => _entities;
+        public IReviseStage<TCase> Revise(object correctValue)
+        {
+            ///TODO
+            
+            return this;
+        }
+        #endregion
 
-        TEntity IRetainStage<TEntity>.Run() => _entitiy;
+        #region Similarity
+        public CBR<TCase> SetSimilarityFunctions(params (string property, ISimilarityFunction similarityFunction)[] pairs)
+        {
+            foreach (var (property, similarityFunction) in pairs)
+            {
+                SimilarityFunctionsPerProperties[property] = similarityFunction;
+            }
 
-        TEntity IReuseStage<TEntity>.Run() => _entitiy;
+            return this;
+        }
 
-        TEntity IReviseStage<TEntity>.Run() => _entitiy;
+        private List<TCase> InvokeAllSimilarityFunctions()
+        {
+            foreach (var pair in SimilarityFunctionsPerProperties)
+            {
+                pair.Value.Invoke(this, pair.Key);
+            }
+
+            List<double> totalScores = new List<double>();
+
+            for (int i = 0; i < Cases.Count; i++)
+            {
+                totalScores.Add(0);
+                foreach (var pair in SimilarityFunctionsPerProperties)
+                {
+                    totalScores[i] += pair.Value.Scores[i] * pair.Value.Weight;
+                }
+            }
+
+            return Cases.Zip(totalScores, (first, second) => new
+            {
+                First = first,
+                Second = second
+            }).OrderByDescending(x => x.Second).Select(x => x.First).ToList();
+        }
+        #endregion
+
+        #region Run Methods
+
+        List<TCase> IRetriveStage<TCase>.Run() => SelectedCases;
+        
+        TCase IRetainStage<TCase>.Run() => ResultCase;
+
+        TCase IReuseStage<TCase>.Run() => ResultCase;
+
+        TCase IReviseStage<TCase>.Run() => ResultCase;
+
+        #endregion
+
     }
 }
