@@ -6,7 +6,11 @@ namespace EasyCBR.Enums
 {
     public enum ChooseType
     {
-        Top,
-        Average
+        MinSimilarity,
+        MaxSimilarity,
+        AverageSimilarity,
+        MinValue,
+        MaxValue,
+        AverageValue
     }
 }

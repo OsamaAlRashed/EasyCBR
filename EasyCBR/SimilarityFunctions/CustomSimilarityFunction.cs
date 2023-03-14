@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EasyCBR.SimilarityFunctions
 {
-    public sealed class LinearSimilarityFunction
+    public sealed class CustomSimilarityFunction
     {
     }
 }

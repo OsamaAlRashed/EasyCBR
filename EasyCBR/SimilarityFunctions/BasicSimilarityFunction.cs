@@ -1,15 +1,20 @@
 ﻿using EasyCBR.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 
 namespace EasyCBR.SimilarityFunctions
 {
-    public class BasicSimilarityFunction : SimilarityFunction
+    public sealed class BasicSimilarityFunction<TProperty> : SimilarityFunction
+        where TProperty : IEquatable<TProperty>, IComparable<TProperty>
     {
         public BasicSimilarityFunction(int weight = 1) : base(weight) { }
 
-        public override void Invoke<TCase>(CBR<TCase> cbr, string propertyName)
+        internal override int Weight { get; set; }
+        internal override List<int> Scores { get; set; }
+
+        internal override void Invoke<TCase>(CBR<TCase> cbr, string propertyName)
             where TCase : class
         {
             if (cbr == null)
@@ -20,8 +25,10 @@ namespace EasyCBR.SimilarityFunctions
 
             if (!cbr.Properties.ContainsKey(propertyName))
                 throw new ArgumentException(propertyName);
-
-            //
+            
+            if (typeof(TProperty) != cbr.Properties[propertyName])
+                throw new ArgumentException(propertyName);
+            
             var newCasePropertyValue = HelperMethods.GetPropertyValue(cbr.Case, propertyName);
 
             for (int i = 0; i < cbr.Cases.Count; i++)

@@ -1,4 +1,4 @@
-﻿using EasyCBR.Contract;
+﻿using EasyCBR.Attributes;
 using EasyCBR.Contract.IStage;
 using EasyCBR.Enums;
 using EasyCBR.SimilarityFunctions;
@@ -28,12 +28,14 @@ namespace EasyCBR
 
         internal Dictionary<string, Type> Properties { get; set; } = new Dictionary<string, Type>();
 
-        internal Dictionary<string, ISimilarityFunction> SimilarityFunctionsPerProperties { get; set; }
-            = new Dictionary<string, ISimilarityFunction>();
+        internal ValueTuple<string, Type> TargetProperty { get; set; }
+
+        internal Dictionary<string, SimilarityFunction> SimilarityFunctionsPerProperties { get; set; }
+            = new Dictionary<string, SimilarityFunction>();
         #endregion
 
         #region Initlize
-        private CBR() { }
+        private CBR() { }   
 
         public static CBR<TCase> Create(string path)
         {
@@ -58,12 +60,10 @@ namespace EasyCBR
         {
             cbr.Properties = GetNameAndTypeProperties<TCase>();
             cbr.Cases = cases;
+            cbr.TargetProperty = GetPropertyHasCustomAttribute<TCase, OutputAttribute>();
 
-            foreach (var property in cbr.Properties)
-            {
-                cbr.SimilarityFunctionsPerProperties
-                    .Add(property.Key, new BasicSimilarityFunction());
-            }
+            cbr.Properties = cbr.Properties.Where(x => x.Key != cbr.TargetProperty.Item1)
+                .ToDictionary(x => x.Key, y => y.Value);
         }
         #endregion
 
@@ -87,19 +87,15 @@ namespace EasyCBR
             return this;
         }
 
-        public IReuseStage<TCase> Reuse(ChooseType chooseType = ChooseType.Top)
+        public IReuseStage<TCase> Reuse(ChooseType chooseType = ChooseType.MaxSimilarity)
         {
             //ToDo
-            switch (chooseType)
+            ResultCase = chooseType switch
             {
-                case ChooseType.Top:
-                    ResultCase = SelectedCases.FirstOrDefault();
-                    break;
-                case ChooseType.Average:
-                    break;
-                default:
-                    break;
-            }
+                ChooseType.MaxSimilarity => SelectedCases.FirstOrDefault(),
+                //ChooseType.Average => SelectedCases.Average(x => x),
+                _ => throw new ArgumentOutOfRangeException(nameof(chooseType)),
+            };
 
             return this;
         }
@@ -107,17 +103,19 @@ namespace EasyCBR
         public IReviseStage<TCase> Revise(object correctValue)
         {
             ///TODO
-            
+            if (correctValue.GetType() != TargetProperty.Item2)
+                throw new ArgumentException();
+
             return this;
         }
         #endregion
 
         #region Similarity
-        public CBR<TCase> SetSimilarityFunctions(params (string property, ISimilarityFunction similarityFunction)[] pairs)
+        public CBR<TCase> SetSimilarityFunctions(params (string property, SimilarityFunction similarityFunction)[] pairs)
         {
             foreach (var (property, similarityFunction) in pairs)
             {
-                SimilarityFunctionsPerProperties[property] = similarityFunction;
+                SimilarityFunctionsPerProperties.TryAdd(property, similarityFunction);
             }
 
             return this;

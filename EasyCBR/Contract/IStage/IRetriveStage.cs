@@ -8,7 +8,7 @@ namespace EasyCBR.Contract.IStage
     public interface IRetriveStage<TCase>
         where TCase : class
     {
-        IReuseStage<TCase> Reuse(ChooseType chooseType = ChooseType.Top);
+        IReuseStage<TCase> Reuse(ChooseType chooseType = ChooseType.MaxSimilarity);
         List<TCase> Run();
     }
 }

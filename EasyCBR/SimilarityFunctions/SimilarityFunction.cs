@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using EasyCBR.Contract;
 
 namespace EasyCBR.SimilarityFunctions
 {
-    public abstract class SimilarityFunction : ISimilarityFunction
+    public abstract class SimilarityFunction
     {
-        public int Weight { get; set; }
-        public List<int> Scores { get; set; }
-
         public SimilarityFunction(int weight = 1)
         {
             Weight = weight;
             Scores = new List<int>();
         }
 
-        public abstract void Invoke<TCase>(CBR<TCase> cbr, string propertyName) where TCase : class;
+        internal abstract int Weight { get; set; }
+        internal abstract List<int> Scores { get; set; }
+
+        internal abstract void Invoke<TCase>(CBR<TCase> cbr, string propertyName) where TCase : class;
     }
 }
