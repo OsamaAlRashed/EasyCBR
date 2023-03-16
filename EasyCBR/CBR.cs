@@ -1,7 +1,8 @@
 ﻿using EasyCBR.Attributes;
 using EasyCBR.Contract.IStage;
 using EasyCBR.Enums;
-using EasyCBR.SimilarityFunctions;
+using EasyCBR.Models;
+using EasyCBR.SimilarityFunctions.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,11 +21,11 @@ namespace EasyCBR
         #region Properties
         internal TCase Case { get; set; } = Activator.CreateInstance<TCase>();
 
-        internal TCase ResultCase { get; set; } = Activator.CreateInstance<TCase>();
+        internal (TCase, double) ResultCase { get; set; } = Activator.CreateInstance<(TCase, double)>();
 
         internal List<TCase> Cases { get; set; } = new List<TCase>();
 
-        internal List<TCase> SelectedCases { get; set; } = new List<TCase>();
+        internal List<(TCase, double)> SelectedCases { get; set; } = new List<(TCase, double)>();
 
         internal Dictionary<string, Type> Properties { get; set; } = new Dictionary<string, Type>();
 
@@ -37,7 +38,8 @@ namespace EasyCBR
         #region Initlize
         private CBR() { }   
 
-        public static CBR<TCase> Create(string path)
+        //TODO public
+        private static CBR<TCase> Create(string path)
         {
             var cbr = new CBR<TCase>();
 
@@ -71,8 +73,6 @@ namespace EasyCBR
         public IRetainStage<TCase> Retain()
         {
             ///TODO
-            
-
             return this;
         }
 
@@ -89,11 +89,20 @@ namespace EasyCBR
 
         public IReuseStage<TCase> Reuse(ChooseType chooseType = ChooseType.MaxSimilarity)
         {
+            var resultCaseValue = SelectedCases
+                .OrderByDescending(selectedCase => selectedCase.Item1.GetType()
+                .GetProperties().Where(x => x.Name == TargetProperty.Item1 && x.PropertyType == TargetProperty.Item2)
+                .FirstOrDefault().GetValue(selectedCase.Item1, null)).ToList();
+
             //ToDo
             ResultCase = chooseType switch
             {
                 ChooseType.MaxSimilarity => SelectedCases.FirstOrDefault(),
-                //ChooseType.Average => SelectedCases.Average(x => x),
+                ChooseType.AverageSimilarity => SelectedCases.Skip(SelectedCases.Count / 2).FirstOrDefault(),
+                ChooseType.MinSimilarity => SelectedCases.LastOrDefault(),
+                ChooseType.MaxValue => resultCaseValue.FirstOrDefault(),
+                ChooseType.AverageValue => resultCaseValue.Skip(SelectedCases.Count / 2).FirstOrDefault(),
+                ChooseType.MinValue => resultCaseValue.LastOrDefault(),
                 _ => throw new ArgumentOutOfRangeException(nameof(chooseType)),
             };
 
@@ -121,7 +130,7 @@ namespace EasyCBR
             return this;
         }
 
-        private List<TCase> InvokeAllSimilarityFunctions()
+        private List<(TCase, double)> InvokeAllSimilarityFunctions()
         {
             foreach (var pair in SimilarityFunctionsPerProperties)
             {
@@ -139,23 +148,20 @@ namespace EasyCBR
                 }
             }
 
-            return Cases.Zip(totalScores, (first, second) => new
-            {
-                First = first,
-                Second = second
-            }).OrderByDescending(x => x.Second).Select(x => x.First).ToList();
+            return Cases.Zip(totalScores, (first, second) => new ValueTuple<TCase, double>(first, second))
+                .OrderByDescending(x => x.Item2).ToList();
         }
         #endregion
 
         #region Run Methods
 
-        List<TCase> IRetriveStage<TCase>.Run() => SelectedCases;
+        List<TCase> IRetriveStage<TCase>.Run() => SelectedCases.Select(x => x.Item1).ToList();
         
-        TCase IRetainStage<TCase>.Run() => ResultCase;
+        TCase IRetainStage<TCase>.Run() => ResultCase.Item1;
 
-        TCase IReuseStage<TCase>.Run() => ResultCase;
+        TCase IReuseStage<TCase>.Run() => ResultCase.Item1;
 
-        TCase IReviseStage<TCase>.Run() => ResultCase;
+        TCase IReviseStage<TCase>.Run() => ResultCase.Item1;
 
         #endregion
 

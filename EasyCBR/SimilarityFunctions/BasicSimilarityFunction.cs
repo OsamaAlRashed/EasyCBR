@@ -1,8 +1,7 @@
 ﻿using EasyCBR.Helpers;
+using EasyCBR.SimilarityFunctions.Base;
 using System;
 using System.Collections.Generic;
-using System.Numerics;
-using System.Text;
 
 namespace EasyCBR.SimilarityFunctions
 {
@@ -12,7 +11,7 @@ namespace EasyCBR.SimilarityFunctions
         public BasicSimilarityFunction(int weight = 1) : base(weight) { }
 
         internal override int Weight { get; set; }
-        internal override List<int> Scores { get; set; }
+        internal override List<double> Scores { get; set; }
 
         internal override void Invoke<TCase>(CBR<TCase> cbr, string propertyName)
             where TCase : class
