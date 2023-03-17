@@ -1,12 +1,11 @@
-﻿namespace EasyCBR.Enums
+﻿namespace EasyCBR.Enums;
+
+public enum ChooseType
 {
-    public enum ChooseType
-    {
-        MaxSimilarity,
-        MinSimilarity,
-        AverageSimilarity,
-        MinValue,
-        MaxValue,
-        AverageValue
-    }
+    MaxSimilarity,
+    MinSimilarity,
+    AverageSimilarity,
+    MinValue,
+    MaxValue,
+    AverageValue
 }

@@ -1,48 +1,27 @@
-﻿
-using EasyCBR;
-using EasyCBR.Attributes;
+﻿using EasyCBR;
+using EasyCBR.Enums;
 using EasyCBR.Helpers;
 using EasyCBR.SimilarityFunctions;
 
 var orderList = new List<Order>()
 {
-    new Order() { Id = 1, Name = "1", Type = OrderType.Type2, Price = 1 },
-    new Order() { Id = 2, Name = "2", Type = OrderType.Type1, Price = 2 },
-    new Order() { Id = 3, Name = "3", Type = OrderType.Type2, Price = 3 },
-    new Order() { Id = 4, Name = "4", Type = OrderType.Type2, Price = 4 },
-    new Order() { Id = 5, Name = "5", Type = OrderType.Type2, Price = 5 }
+    new Order(1, "Osama", OrderType.A, 100),
+    new Order(2, "Mohammed", OrderType.C, 120),
+    new Order(3, "Hussam", OrderType.B, 430),
+    new Order(4, "Mohanned", OrderType.B, 90),
+    new Order(5, "Abd Alqader", OrderType.A, 5)
 };
 
 var result = CBR<Order>
         .Create(orderList)
-        .Output(x => x.Price)
+        .Output(order => order.Price)
         .SetSimilarityFunctions(
-            ("Id", new BasicSimilarityFunction<int>(2)),
-            ("Name", new BasicSimilarityFunction<string>(1))
+            (nameof(Order.CustomerName), new BasicSimilarityFunction<string>(1))
          )
-        .Retrieve(new Order(), 5)
-        .Reuse(EasyCBR.Enums.ChooseType.AverageSimilarity)
-        .Revise(0)
+        .Retrieve(new Order(6, "Test", OrderType.A, 0), 5)
+        .Reuse(ChooseType.MaxSimilarity)
+        .Revise()
         .Retain()
         .Run();
 
 Console.WriteLine(result.Price);
-
-public class Order
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-
-    public OrderType Type { get; set; }
-
-    [Output]
-    public int Price { get; set; }
-
-}
-
-public enum OrderType
-{
-    Type1,
-    Type2,
-    Type3,
-}

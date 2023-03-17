@@ -1,8 +1,7 @@
-﻿namespace EasyCBR.Contract.IStage
+﻿namespace EasyCBR.Contract.IStage;
+
+public interface IRetainStage<TCase>
+    where TCase : class
 {
-    public interface IRetainStage<TCase>
-        where TCase : class
-    {
-        TCase Run();
-    }
+    TCase Run();
 }
