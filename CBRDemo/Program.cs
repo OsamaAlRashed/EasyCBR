@@ -1,6 +1,7 @@
 ﻿
 using EasyCBR;
 using EasyCBR.Attributes;
+using EasyCBR.Helpers;
 using EasyCBR.SimilarityFunctions;
 
 var orderList = new List<Order>()
@@ -14,6 +15,7 @@ var orderList = new List<Order>()
 
 var result = CBR<Order>
         .Create(orderList)
+        .Output(x => x.Price)
         .SetSimilarityFunctions(
             ("Id", new BasicSimilarityFunction<int>(2)),
             ("Name", new BasicSimilarityFunction<string>(1)),
