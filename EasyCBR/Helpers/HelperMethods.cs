@@ -25,9 +25,7 @@ namespace EasyCBR.Helpers
         }
 
         internal static object GetPropertyValue(object obj, string propName) 
-        { 
-            return obj.GetType().GetProperty(propName).GetValue(obj, null); 
-        }
+            => obj.GetType().GetProperty(propName).GetValue(obj, null);
 
         internal static (string, Type) GetPropertyHasCustomAttribute<TCase, TAttribute>()
             where TCase : class
@@ -40,10 +38,13 @@ namespace EasyCBR.Helpers
                 .ToList();
 
             if (properties.Count == 0)
-                throw new Exception();
+                throw new Exception("Must put Output attribute on one of properties.");
 
             if (properties.Count > 1)
-                throw new Exception();
+                throw new Exception("Must put Output attribute on one of properties.");
+
+            //ToDO
+            // Check if INumber type.
 
             return (properties[0].Name, properties[0].PropertyType);
         }

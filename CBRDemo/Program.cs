@@ -18,11 +18,10 @@ var result = CBR<Order>
         .Output(x => x.Price)
         .SetSimilarityFunctions(
             ("Id", new BasicSimilarityFunction<int>(2)),
-            ("Name", new BasicSimilarityFunction<string>(1)),
-            ("Type", new TableSimilarityFunction<OrderType>(2))
+            ("Name", new BasicSimilarityFunction<string>(1))
          )
-        .Retrieve(new Order(), 2)
-        .Reuse(EasyCBR.Enums.ChooseType.MaxSimilarity)
+        .Retrieve(new Order(), 5)
+        .Reuse(EasyCBR.Enums.ChooseType.AverageSimilarity)
         .Revise(0)
         .Retain()
         .Run();

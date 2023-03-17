@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EasyCBR.Enums
+﻿namespace EasyCBR.Enums
 {
     public enum ChooseType
     {
-        MinSimilarity,
         MaxSimilarity,
+        MinSimilarity,
         AverageSimilarity,
         MinValue,
         MaxValue,
