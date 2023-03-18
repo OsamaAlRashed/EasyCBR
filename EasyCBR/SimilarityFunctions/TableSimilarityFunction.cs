@@ -1,70 +1,65 @@
-﻿//using EasyCBR.Helpers;
-//using EasyCBR.SimilarityFunctions.Base;
-//using System;
-//using System.Collections.Generic;
-//using System.Text;
+﻿using EasyCBR.SimilarityFunctions.Base;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-//namespace EasyCBR.SimilarityFunctions
-//{
-//    public sealed class TableSimilarityFunction<TProperty> : SimilarityFunction
-//        where TProperty : Enum
-//    {
-//        private double[,] _similarityMatrix;
-//        internal override int Weight { get; set; }
-//        internal override List<int> Scores { get; set; }
+namespace EasyCBR.SimilarityFunctions;
 
-//        public TableSimilarityFunction(int weight = 1) : base(weight)
-//        {
-//            var enumValues = Enum.GetValues(typeof(TProperty));
-//            Init(enumValues);
-//        }
+/// <summary>
+/// Represnts Table similarity function.
+/// </summary>
+/// <typeparam name="TProperty"></typeparam>
+public sealed class TableSimilarityFunction<TProperty> : SimilarityFunction
+    where TProperty : Enum
+{
+    private double[,] _similarityMatrix;
+    internal override int Weight { get; set; }
+    internal override List<double> Scores { get; set; }
 
-//        public TableSimilarityFunction(double [,] matrix, int weight = 1) : base(weight)
-//        {
-//            var enumValues = Enum.GetValues(typeof(TProperty));
-//            Init(enumValues);
+    internal Dictionary<object, int> EnumIndexes = Enum.GetValues(typeof(TProperty)).Cast<object>()
+        .Select((value, i) => new { index = i, value = value })
+        .ToDictionary(x => x.value, x => x.index);
 
-//        }
+    public TableSimilarityFunction(int weight = 1) : base(weight)
+    {
+        Init();
+    }
 
-//        private void Init(Array enumValues)
-//        {
-//            _similarityMatrix = new double[enumValues.Length, enumValues.Length];
+    public TableSimilarityFunction(double[,] matrix, int weight = 1) : base(weight)
+    {
+        Init();
+        _similarityMatrix = matrix;
+    }
 
-//            for (int i = 0; i < enumValues.Length; i++)
-//            {
-//                for (int j = 0; j < enumValues.Length; j++)
-//                {
-//                    if (i == j)
-//                        _similarityMatrix[i, j] = 1.0;
-//                    else
-//                        _similarityMatrix[i, j] = 0.0;
-//                }
-//            }
-//        }
+    private void Init()
+    {
+        _similarityMatrix = new double[EnumIndexes.Count, EnumIndexes.Count];
 
-//        internal override void Invoke<TCase>(CBR<TCase> cbr, string propertyName)
-//            where TCase : class
-//        {
-//            if (cbr == null)
-//                throw new ArgumentNullException(nameof(cbr));
+        for (int i = 0; i < EnumIndexes.Count; i++)
+        {
+            for (int j = 0; j < EnumIndexes.Count; j++)
+            {
+                if (i == j)
+                    _similarityMatrix[i, j] = 1.0;
+                else
+                    _similarityMatrix[i, j] = 0.0;
+            }
+        }
+    }
 
-//            if (propertyName == null)
-//                throw new ArgumentNullException(propertyName);
+    internal override double Invoke<TCase>(object value, object newValue)
+        where TCase : class
+    {
+        if(!EnumIndexes.TryGetValue(value, out int index))
+        {
+            throw new ArgumentException(nameof(value));
+        }
 
-//            if (!cbr.Properties.ContainsKey(propertyName))
-//                throw new ArgumentException(propertyName);
+        if (!EnumIndexes.TryGetValue(newValue, out int newIndex))
+        {
+            throw new ArgumentException(nameof(newValue));
+        }
 
-//            if (typeof(TProperty) != cbr.Properties[propertyName])
-//                throw new ArgumentException(propertyName);
-
-//            var newCasePropertyValue = HelperMethods.GetPropertyValue(cbr.Case, propertyName);
-
-//            for (int i = 0; i < cbr.Cases.Count; i++)
-//            {
-//                var value = HelperMethods.GetPropertyValue(cbr.Cases[i], propertyName);
-
-                
-//            }
-//        }
-//    }
-//}
+        return _similarityMatrix[index, newIndex];
+    }
+}

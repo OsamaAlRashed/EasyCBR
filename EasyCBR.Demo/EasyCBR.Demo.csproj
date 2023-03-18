@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EasyCBR.IO\EasyCBR.IO.csproj" />
+    <ProjectReference Include="..\EasyCBR\EasyCBR.csproj" />
   </ItemGroup>
 
 </Project>

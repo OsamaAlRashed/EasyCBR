@@ -1,48 +1,22 @@
-﻿using EasyCBR.Helpers;
-using EasyCBR.SimilarityFunctions.Base;
+﻿using EasyCBR.SimilarityFunctions.Base;
 using System;
 using System.Collections.Generic;
 
-namespace EasyCBR.SimilarityFunctions
+namespace EasyCBR.SimilarityFunctions;
+
+/// <summary>
+/// Represents basic similarity function.
+/// </summary>
+/// <typeparam name="TProperty"></typeparam>
+public sealed class BasicSimilarityFunction<TProperty> : SimilarityFunction
+    where TProperty : IEquatable<TProperty>, IComparable<TProperty>
 {
-    public sealed class BasicSimilarityFunction<TProperty> : SimilarityFunction
-        where TProperty : IEquatable<TProperty>, IComparable<TProperty>
-    {
-        public BasicSimilarityFunction(int weight = 1) : base(weight) { }
+    public BasicSimilarityFunction(int weight = 1) : base(weight) { }
 
-        internal override int Weight { get; set; }
-        internal override List<double> Scores { get; set; }
+    internal override int Weight { get; set; }
+    internal override List<double> Scores { get; set; }
 
-        internal override void Invoke<TCase>(CBR<TCase> cbr, string propertyName)
-            where TCase : class
-        {
-            if (cbr == null)
-                throw new ArgumentNullException(nameof(cbr));
-
-            if (propertyName == null) 
-                throw new ArgumentNullException(propertyName);
-
-            if (!cbr.Properties.ContainsKey(propertyName))
-                throw new ArgumentException(propertyName);
-            
-            if (typeof(TProperty) != cbr.Properties[propertyName])
-                throw new ArgumentException(propertyName);
-            
-            var newCasePropertyValue = HelperMethods.GetPropertyValue(cbr.Case, propertyName);
-
-            for (int i = 0; i < cbr.Cases.Count; i++)
-            {
-                var value = HelperMethods.GetPropertyValue(cbr.Cases[i], propertyName);
-
-                if (value.Equals(newCasePropertyValue))
-                {
-                    Scores.Add(1);
-                }
-                else
-                {
-                    Scores.Add(0);
-                }
-            }
-        }
-    }
+    internal override double Invoke<TCase>(object value, object newValue)
+        where TCase : class 
+        => value.Equals(newValue) ? 1 : 0;
 }

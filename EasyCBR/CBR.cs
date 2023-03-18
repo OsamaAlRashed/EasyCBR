@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using static EasyCBR.Helpers.HelperMethods;
+
 namespace EasyCBR;
 
 public sealed class CBR<TCase> :
@@ -69,7 +70,7 @@ public sealed class CBR<TCase> :
         return this;
     }
     
-    public IReuseStage<TCase> Reuse(ChooseType chooseType = ChooseType.MaxSimilarity)
+    public IReuseStage<TCase> Reuse(SelectType chooseType = SelectType.MaxSimilarity)
     {
         var resultCaseValue = SelectedCases
             .OrderByDescending(selectedCase => 
@@ -83,12 +84,12 @@ public sealed class CBR<TCase> :
 
         ResultCase = chooseType switch
         {
-            ChooseType.MaxSimilarity => SelectedCases.FirstOrDefault(),
-            ChooseType.AverageSimilarity => SelectedCases.Skip(SelectedCases.Count / 2).FirstOrDefault(),
-            ChooseType.MinSimilarity => SelectedCases.LastOrDefault(),
-            ChooseType.MaxValue => resultCaseValue.FirstOrDefault(),
-            ChooseType.AverageValue => resultCaseValue.Skip(SelectedCases.Count / 2).FirstOrDefault(),
-            ChooseType.MinValue => resultCaseValue.LastOrDefault(),
+            SelectType.MaxSimilarity => SelectedCases.FirstOrDefault(),
+            SelectType.AverageSimilarity => SelectedCases.Skip(SelectedCases.Count / 2).FirstOrDefault(),
+            SelectType.MinSimilarity => SelectedCases.LastOrDefault(),
+            SelectType.MaxValue => resultCaseValue.FirstOrDefault(),
+            SelectType.AverageValue => resultCaseValue.Skip(SelectedCases.Count / 2).FirstOrDefault(),
+            SelectType.MinValue => resultCaseValue.LastOrDefault(),
             _ => throw new ArgumentOutOfRangeException(nameof(chooseType)),
         };
 
@@ -118,7 +119,7 @@ public sealed class CBR<TCase> :
     {
         foreach (var pair in SimilarityFunctionsPerProperties)
         {
-            pair.Value.Invoke(this, pair.Key);
+            pair.Value.InvokeCore(this, pair.Key);
         }
 
         List<double> totalScores = new List<double>();
