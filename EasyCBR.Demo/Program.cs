@@ -12,11 +12,11 @@ var orderList = new List<Order>()
     new Order(5, "Abd Alqader", OrderType.A, 5)
 };
 
-var result = CBR<Order>  
+var result = CBR<Order>
         .Create(orderList)
         .Output(order => order.Price)
         .SetSimilarityFunctions(
-            (nameof(Order.CustomerName), new BasicSimilarityFunction<string>(2)),
+            (nameof(Order.CustomerName), new BasicSimilarityFunction<string>(10)),
             (nameof(Order.Type), new TableSimilarityFunction<OrderType>(4))
          )
         .Retrieve(new Order(6, "Osama", OrderType.C, 0), 2)

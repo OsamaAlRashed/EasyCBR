@@ -41,6 +41,12 @@ public sealed class CBR<TCase> :
 
     public static CBR<TCase> Create(List<TCase> cases)
     {
+        if(cases == null) 
+            throw new ArgumentNullException(nameof(cases));
+
+        if(cases.Count == 0)
+            throw new ArgumentOutOfRangeException(nameof(cases));
+
         var cbr = new CBR<TCase>();
 
         Init(cbr, cases);
@@ -59,12 +65,15 @@ public sealed class CBR<TCase> :
     #endregion
 
     #region 4R
-    public IRetriveStage<TCase> Retrieve(TCase Case, int count)
+    public IRetriveStage<TCase> Retrieve(TCase @case, int count)
     {
+        if (@case == null) 
+            throw new ArgumentNullException(nameof(@case));
+
         if (count <= 0 || Cases.Count < count)
             throw new ArgumentOutOfRangeException(nameof(count));
 
-        this.Case = Case;
+        this.Case = @case;
         SelectedCases = InvokeAllSimilarityFunctions().Take(count).ToList();
 
         return this;

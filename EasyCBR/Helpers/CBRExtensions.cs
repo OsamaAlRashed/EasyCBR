@@ -2,6 +2,7 @@
 using EasyCBR.SimilarityFunctions.Base;
 using System;
 using System.Linq.Expressions;
+using System.Numerics;
 
 namespace EasyCBR.Helpers;
 
@@ -20,10 +21,11 @@ public static class CBRExtensions
     /// <returns>Returns CBR instance eith a selected case.</returns>
     public static ModelWithOutput<TCase> Output<TCase, TProperty>(this CBR<TCase> entity, Expression<Func<TCase, TProperty>> propertyExpression)
         where TCase : class
+        where TProperty : INumber<TProperty>
     {
         var memberExpression = (MemberExpression)propertyExpression.Body;
-        return new ModelWithOutput<TCase>() 
-        { 
+        return new ModelWithOutput<TCase>()
+        {
             Case = entity,
             Output = memberExpression.Member
         };
@@ -39,6 +41,12 @@ public static class CBRExtensions
     public static CBR<TCase> SetSimilarityFunctions<TCase>(this ModelWithOutput<TCase> entityWithOutput, params (string property, SimilarityFunction similarityFunction)[] pairs)
         where TCase : class
     {
+        if (pairs == null)
+            throw new ArgumentNullException(nameof(pairs));
+
+        if(pairs.Length == 0)
+            throw new ArgumentException(nameof(pairs));
+
         entityWithOutput.Case.TargetProperty = new TargetProperty()
         {
             Name = entityWithOutput.Output.Name,
@@ -47,6 +55,14 @@ public static class CBRExtensions
 
         foreach (var (property, similarityFunction) in pairs)
         {
+            if(!entityWithOutput.Case.Properties.ContainsKey(property))
+                throw new ArgumentException(nameof(property));
+
+            var x = similarityFunction.GetType().GetGenericArguments()[0];
+
+            if (entityWithOutput.Case.Properties[property] != similarityFunction.GetType().GetGenericArguments()[0])
+                throw new ArgumentException(nameof(property));
+
             entityWithOutput.Case.SimilarityFunctionsPerProperties.TryAdd(property, similarityFunction);
         }
 
