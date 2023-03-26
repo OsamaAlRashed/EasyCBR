@@ -29,8 +29,6 @@ public abstract class SimilarityFunction
         if (!cbr.Properties.ContainsKey(propertyName))
             throw new ArgumentException(propertyName);
 
-        //if (typeof(TProperty) != cbr.Properties[propertyName])
-        //    throw new ArgumentException(propertyName);
 
         var newCasePropertyValue = HelperMethods.GetPropertyValue(cbr.Case, propertyName);
 

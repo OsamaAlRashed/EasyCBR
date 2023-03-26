@@ -9,7 +9,7 @@ namespace EasyCBR.SimilarityFunctions;
 /// </summary>
 /// <typeparam name="TProperty"></typeparam>
 public sealed class BasicSimilarityFunction<TProperty> : SimilarityFunction
-    where TProperty : IEquatable<TProperty>, IComparable<TProperty>
+    where TProperty : IEquatable<TProperty>
 {
     public BasicSimilarityFunction(int weight = 1) : base(weight) { }
 

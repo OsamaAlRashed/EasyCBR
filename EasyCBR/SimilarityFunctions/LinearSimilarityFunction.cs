@@ -1,4 +1,5 @@
 ﻿using EasyCBR.SimilarityFunctions.Base;
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -14,9 +15,21 @@ public sealed class LinearSimilarityFunction<TProperty> : SimilarityFunction
     internal override int Weight { get; set; }
     internal override List<double> Scores { get; set; }
 
+    private double maxDiffrence = 1;
+
     public LinearSimilarityFunction(int weight = 1) : base(weight) { }
 
     internal override double Invoke<TCase>(object value, object newValue)
-            where TCase : class 
-        => (double)value - (double)newValue;
+            where TCase : class
+    {
+        var diffrence = Math.Abs(double.Parse(value.ToString()) - double.Parse(newValue.ToString()));
+
+        // ToDo
+        if (diffrence > maxDiffrence)
+        {
+            maxDiffrence = diffrence;
+        }
+
+        return diffrence;
+    }
 }

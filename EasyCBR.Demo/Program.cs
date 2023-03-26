@@ -3,24 +3,50 @@ using EasyCBR.Enums;
 using EasyCBR.Helpers;
 using EasyCBR.SimilarityFunctions;
 
-var orderList = new List<Order>()
+var laptopList = new List<Laptop>()
 {
-    new Order(1, "Osama", OrderType.A, 100),
-    new Order(2, "Mohammed", OrderType.C, 120),
-    new Order(3, "Hussam", OrderType.B, 430),
-    new Order(4, "Mohanned", OrderType.B, 90),
-    new Order(5, "Abd Alqader", OrderType.A, 5)
+   new Laptop("ModelX1", Manufacture.Asus, 4, "I3_G5", false, 200),
+   new Laptop("ModelX2", Manufacture.Dell, 4, "I3_G6", false, 220),
+   new Laptop("ModelX3", Manufacture.Asus, 4, "I3_G7", false, 250),
+   new Laptop("ModelX4", Manufacture.Hp, 8, "I5_G8", false, 300),
+   new Laptop("ModelX5", Manufacture.Lenovo, 8, "I5_G8", false, 280),
+   new Laptop("ModelX6", Manufacture.Dell, 16, "I5_G11", true, 500),
+   new Laptop("ModelX7", Manufacture.Lenovo, 12, "I5_G10", false, 400),
+   new Laptop("ModelX8", Manufacture.Hp, 16, "I5_G12", true, 600),
+   new Laptop("ModelX9", Manufacture.Lenovo, 32, "I5_G12", true, 650),
+   new Laptop("ModelX10", Manufacture.Asus, 16, "I5_G11", true, 450),
 };
 
-var result = CBR<Order>
-        .Create(orderList)
+Func<object, object, double> cpuSimilarity = (value, queryValue) =>
+{
+    double result = 0;
+    var values = ((string)value).Split('_');
+    var queryValues = ((string)queryValue).Split('_');
+    if (values[0] == queryValues[0])
+    {
+        result += 0.5;
+    }
+
+    if (values[1] == queryValues[1])
+    {
+        result += 0.5;
+    }
+
+    return result;
+};
+
+var result = CBR<Laptop>
+        .Create(laptopList)
         .Output(order => order.Price)
-        .SetSimilarityFunctions(
-            (nameof(Order.CustomerName), new BasicSimilarityFunction<string>(10)),
-            (nameof(Order.Type), new TableSimilarityFunction<OrderType>(4))
+        .SetSimilarityFunctions
+        (
+            (nameof(Laptop.Manufacture), new TableSimilarityFunction<Manufacture>(1)),
+            (nameof(Laptop.RAM), new LinearSimilarityFunction<int>(2)),
+            (nameof(Laptop.SSD), new BasicSimilarityFunction<bool>(2)),
+            (nameof(Laptop.CPU), new CustomSimilarityFunction<string>(cpuSimilarity, 4))
          )
-        .Retrieve(new Order(6, "Osama", OrderType.C, 0), 2)
-        .Reuse(SelectType.MaxSimilarity)
+        .Retrieve(new Laptop("ModelX", Manufacture.Asus, 8, "I5_G11", true, 0), 3)
+        .Reuse(SelectType.AverageSimilarity)
         .Revise()
         .Retain()
         .Run();

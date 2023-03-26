@@ -6,7 +6,7 @@ using EasyCBR.SimilarityFunctions;
 namespace EasyCBR.Tests.UnitTests;
 
 //ToDo Rename the methods
-public class CreateUnitTest
+public class UnitTest
 {
     public List<Order> orders = new List<Order>()
     {
