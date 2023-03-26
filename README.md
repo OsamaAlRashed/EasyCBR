@@ -1,4 +1,4 @@
-# EasyCBR 1.0.0
+# EasyCBR 1.0.1
 
 - The easy way to implement CBR (Case Based Reasoning) in C#.
 
