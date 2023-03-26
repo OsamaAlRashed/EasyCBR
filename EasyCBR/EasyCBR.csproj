@@ -5,6 +5,9 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Authors>Osama Al-Rashed</Authors>
     <Company>Easy Packages</Company>
+    <Version>1.0.1</Version>
+    <Description>The easy way to implement CBR (Case Based Reasoning) in C#.</Description>
+    <RepositoryUrl>https://github.com/OsamaAlRashed/EasyCBR</RepositoryUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
