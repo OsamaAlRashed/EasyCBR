@@ -17,11 +17,11 @@ var laptopList = new List<Laptop>()
    new Laptop("ModelX10", Manufacture.Asus, 16, "I5_G11", true, 450),
 };
 
-Func<object, object, double> cpuSimilarity = (value, queryValue) =>
+Func<string, string, double> cpuSimilarity = (value, queryValue) =>
 {
     double result = 0;
-    var values = ((string)value).Split('_');
-    var queryValues = ((string)queryValue).Split('_');
+    var values = value.Split('_');
+    var queryValues = queryValue.Split('_');
     if (values[0] == queryValues[0])
     {
         result += 0.5;
@@ -35,20 +35,28 @@ Func<object, object, double> cpuSimilarity = (value, queryValue) =>
     return result;
 };
 
+var tableManyfactureSimilarity = new double[4, 4]
+{
+    { 1.0, 0.5, 0.7, 0.2 },
+    { 0.5, 1.0, 0.3, 0.3 },
+    { 0.7, 0.3, 1.0, 0.1 },
+    { 0.2, 0.3, 0.1, 1.0 }
+};
+
 var result = CBR<Laptop>
-        .Create(laptopList)
-        .Output(order => order.Price)
-        .SetSimilarityFunctions
-        (
-            (nameof(Laptop.Manufacture), new TableSimilarityFunction<Manufacture>(1)),
-            (nameof(Laptop.RAM), new LinearSimilarityFunction<int>(2)),
-            (nameof(Laptop.SSD), new BasicSimilarityFunction<bool>(2)),
-            (nameof(Laptop.CPU), new CustomSimilarityFunction<string>(cpuSimilarity, 4))
-         )
-        .Retrieve(new Laptop("ModelX", Manufacture.Asus, 8, "I5_G11", true, 0), 3)
-        .Reuse(SelectType.AverageSimilarity)
-        .Revise()
-        .Retain()
-        .Run();
+    .Create(laptopList)
+    .Output(order => order.Price)
+    .SetSimilarityFunctions
+    (
+        (nameof(Laptop.Manufacture), new TableSimilarityFunction<Manufacture>(tableManyfactureSimilarity)),
+        (nameof(Laptop.RAM), new LinearSimilarityFunction<int>(2)),
+        (nameof(Laptop.SSD), new BasicSimilarityFunction<bool>(2)),
+        (nameof(Laptop.CPU), new CustomSimilarityFunction<string>(cpuSimilarity, 4))
+    )
+    .Retrieve(new Laptop("ModelX", Manufacture.Asus, 8, "I5_G11", true, 0), 3)
+    .Reuse(SelectType.AverageSimilarity)
+    .Revise((decimal)400)
+    .Retain()
+    .Run();
 
 Console.WriteLine(result.Price);

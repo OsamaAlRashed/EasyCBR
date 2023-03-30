@@ -5,6 +5,7 @@ using EasyCBR.SimilarityFunctions.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using static EasyCBR.Helpers.HelperMethods;
 
 namespace EasyCBR;
@@ -67,13 +68,10 @@ public sealed class CBR<TCase> :
     #region 4R
     public IRetriveStage<TCase> Retrieve(TCase @case, int count)
     {
-        if (@case == null) 
-            throw new ArgumentNullException(nameof(@case));
-
         if (count <= 0 || Cases.Count < count)
             throw new ArgumentOutOfRangeException(nameof(count));
 
-        this.Case = @case;
+        this.Case = @case ?? throw new ArgumentNullException(nameof(@case));
         SelectedCases = InvokeAllSimilarityFunctions().Take(count).ToList();
 
         return this;
@@ -107,11 +105,18 @@ public sealed class CBR<TCase> :
 
     public IReviseStage<TCase> Revise(object correctValue)
     {
-        ///TODO
         if (correctValue.GetType() != TargetProperty.Type)
             throw new ArgumentException();
+        
+        SetValue(correctValue);
 
         return this;
+    }
+
+    private void SetValue(object correctValue)
+    {
+        PropertyInfo propInfo = ResultCase.Case.GetType().GetProperty(TargetProperty.Name);
+        propInfo.SetValue(ResultCase.Case, correctValue);
     }
 
     public IReviseStage<TCase> Revise() => this;
@@ -131,7 +136,7 @@ public sealed class CBR<TCase> :
             pair.Value.InvokeCore(this, pair.Key);
         }
 
-        List<double> totalScores = new List<double>();
+        List<double> totalScores = new();
 
         for (int i = 0; i < Cases.Count; i++)
         {
