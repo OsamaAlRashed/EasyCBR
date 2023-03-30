@@ -9,7 +9,7 @@
     <Company>Easy Packages</Company>
     <Version>1.0.2</Version>
     <Description>The easy way to implement CBR (Case Based Reasoning) in C#.</Description>
-    <PackageProjectUrl>https://github.com/OsamaAlRashed/EasyCBR</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/OsamaAlRashed/EasyCBR/tree/master/EasyCBR.IO</PackageProjectUrl>
     <PackageTags>CBR </PackageTags>
   </PropertyGroup>
 
