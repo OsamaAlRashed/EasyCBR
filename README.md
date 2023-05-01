@@ -1,5 +1,20 @@
 # EasyCBR 1.0.2
 
+
+  <table>
+  <tbody>
+
+  <tr>
+  <td> 
+    <a href="https://www.nuget.org/packages/EasyCBR/">
+      <img alt="Nuget" src="https://img.shields.io/nuget/dt/EasyCBR?color=blue&label=EasyCBR&logo=nuget&style=flate">
+    </a>
+  </td> 
+  </tr>
+    
+  </tbody>
+  <table>
+
 - The easy way to implement CBR (Case Based Reasoning) in C#.
 
 **Documentation** 
