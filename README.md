@@ -1,4 +1,4 @@
-# EasyCBR 1.0.2
+# EasyCBR 1.0.3
 
 
   <table>
@@ -29,9 +29,6 @@
    - LinearSimilarityFunction
    - TableSimilarityFunction
    - CustomSimilarityFunction
-   
-   // Todo
-   - ScalingSimilarityFunction
    
   **Demo**
  
