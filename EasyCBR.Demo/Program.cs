@@ -49,13 +49,13 @@ var result = CBR<Laptop>
     .SetSimilarityFunctions
     (
         (nameof(Laptop.Manufacture), new TableSimilarityFunction<Manufacture>(tableManyfactureSimilarity)),
-        (nameof(Laptop.RAM), new LinearSimilarityFunction<int>(2)),
+        (nameof(Laptop.RAM), new LinearSimilarityFunction<int>(4, 32, 2)),
         (nameof(Laptop.SSD), new BasicSimilarityFunction<bool>(2)),
         (nameof(Laptop.CPU), new CustomSimilarityFunction<string>(cpuSimilarity, 4))
     )
-    .Retrieve(new Laptop("ModelX", Manufacture.Asus, 8, "I5_G11", true, 0), 3)
-    .Reuse(SelectType.AverageSimilarity)
-    .Revise((decimal)400)
+    .Retrieve(new Laptop("ModelX", Manufacture.Asus, 32, "I5_G11", true, 0), 3)
+    .Reuse(SelectType.AverageValue)
+    .Revise()
     .Retain()
     .Run();
 

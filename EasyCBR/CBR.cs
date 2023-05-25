@@ -86,8 +86,8 @@ public sealed class CBR<TCase> :
                 .GetProperties()
                 .Where(x => x.Name == TargetProperty.Name && x.PropertyType == TargetProperty.Type)
                 .FirstOrDefault()
-                .GetValue(selectedCase.Case, null)
-                ).ToList();
+                .GetValue(selectedCase.Case, null))
+            .ToList();
 
         ResultCase = chooseType switch
         {
