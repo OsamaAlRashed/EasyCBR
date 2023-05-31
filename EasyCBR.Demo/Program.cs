@@ -43,7 +43,7 @@ var tableManyfactureSimilarity = new double[4, 4]
     { 0.2, 0.3, 0.1, 1.0 }
 };
 
-var result = CBR<Laptop>
+var result = CBR<Laptop, decimal>
     .Create(laptopList)
     .Output(order => order.Price)
     .SetSimilarityFunctions
@@ -58,5 +58,6 @@ var result = CBR<Laptop>
     .Revise()
     .Retain()
     .Run();
+
 
 Console.WriteLine(result.Price);

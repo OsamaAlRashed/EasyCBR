@@ -19,12 +19,17 @@ public static class CBRExtensions
     /// <param name="entity">Instance of CBR</param>
     /// <param name="propertyExpression">Select the property</param>
     /// <returns>Returns CBR instance eith a selected case.</returns>
-    public static ModelWithOutput<TCase> Output<TCase, TProperty>(this CBR<TCase> entity, Expression<Func<TCase, TProperty>> propertyExpression)
+    public static ModelWithOutput<TCase, TOutput> Output<TCase, TOutput, TProperty>(this CBR<TCase, TOutput> entity, Expression<Func<TCase, TProperty>> propertyExpression)
         where TCase : class
         where TProperty : INumber<TProperty>
     {
+        if(typeof(TProperty) != typeof(TOutput))
+        {
+            throw new ArgumentException("The type of the property must match the type of the output");
+        }
+
         var memberExpression = (MemberExpression)propertyExpression.Body;
-        return new ModelWithOutput<TCase>()
+        return new ModelWithOutput<TCase, TOutput>()
         {
             Case = entity,
             Output = memberExpression.Member
@@ -38,7 +43,7 @@ public static class CBRExtensions
     /// <param name="entityWithOutput">The return type of output.</param>
     /// <param name="pairs">Each propetry with its similarity function.</param>
     /// <returns></returns>
-    public static CBR<TCase> SetSimilarityFunctions<TCase>(this ModelWithOutput<TCase> entityWithOutput, params (string property, SimilarityFunction similarityFunction)[] pairs)
+    public static CBR<TCase, TOutput> SetSimilarityFunctions<TCase, TOutput>(this ModelWithOutput<TCase, TOutput> entityWithOutput, params (string property, SimilarityFunction similarityFunction)[] pairs)
         where TCase : class
     {
         if (pairs == null)
@@ -57,8 +62,6 @@ public static class CBRExtensions
         {
             if(!entityWithOutput.Case.Properties.ContainsKey(property))
                 throw new ArgumentException(nameof(property));
-
-            var x = similarityFunction.GetType().GetGenericArguments()[0];
 
             if (entityWithOutput.Case.Properties[property] != similarityFunction.GetType().GetGenericArguments()[0])
                 throw new ArgumentException(nameof(property));

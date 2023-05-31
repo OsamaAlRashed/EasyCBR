@@ -10,10 +10,10 @@ using static EasyCBR.Helpers.HelperMethods;
 
 namespace EasyCBR;
 
-public sealed class CBR<TCase> :
-    IRetriveStage<TCase>,
+public sealed class CBR<TCase, TOutput> :
+    IRetriveStage<TCase, TOutput>,
     IRetainStage<TCase>,
-    IReuseStage<TCase>,
+    IReuseStage<TCase, TOutput>,
     IReviseStage<TCase>
     where TCase : class
 {
@@ -40,7 +40,7 @@ public sealed class CBR<TCase> :
     #region Initlize
     private CBR() { }   
 
-    public static CBR<TCase> Create(List<TCase> cases)
+    public static CBR<TCase, TOutput> Create(List<TCase> cases)
     {
         if(cases == null) 
             throw new ArgumentNullException(nameof(cases));
@@ -48,14 +48,14 @@ public sealed class CBR<TCase> :
         if(cases.Count == 0)
             throw new ArgumentOutOfRangeException(nameof(cases));
 
-        var cbr = new CBR<TCase>();
+        var cbr = new CBR<TCase, TOutput>();
 
         Init(cbr, cases);
 
         return cbr;
     }
 
-    public static void Init(CBR<TCase> cbr, List<TCase> cases)
+    public static void Init(CBR<TCase, TOutput> cbr, List<TCase> cases)
     {
         cbr.Properties = GetNameAndTypeProperties<TCase>();
         cbr.Cases = cases;
@@ -66,7 +66,7 @@ public sealed class CBR<TCase> :
     #endregion
 
     #region 4R
-    public IRetriveStage<TCase> Retrieve(TCase @case, int count)
+    public IRetriveStage<TCase, TOutput> Retrieve(TCase @case, int count)
     {
         if (count <= 0 || Cases.Count < count)
             throw new ArgumentOutOfRangeException(nameof(count));
@@ -77,7 +77,7 @@ public sealed class CBR<TCase> :
         return this;
     }
     
-    public IReuseStage<TCase> Reuse(SelectType chooseType = SelectType.MaxSimilarity)
+    public IReuseStage<TCase, TOutput> Reuse(SelectType chooseType = SelectType.MaxSimilarity)
     {
         var resultCaseValue = SelectedCases
             .OrderByDescending(selectedCase => 
@@ -103,20 +103,12 @@ public sealed class CBR<TCase> :
         return this;
     }
 
-    public IReviseStage<TCase> Revise(object correctValue)
-    {
-        if (correctValue.GetType() != TargetProperty.Type)
-            throw new ArgumentException();
-        
-        SetValue(correctValue);
-
-        return this;
-    }
-
-    private void SetValue(object correctValue)
+    public IReviseStage<TCase> Revise(TOutput correctValue)
     {
         PropertyInfo propInfo = ResultCase.Case.GetType().GetProperty(TargetProperty.Name);
         propInfo.SetValue(ResultCase.Case, correctValue);
+
+        return this;
     }
 
     public IReviseStage<TCase> Revise() => this;
@@ -157,11 +149,11 @@ public sealed class CBR<TCase> :
 
     #region Run Methods
 
-    List<TCase> IRetriveStage<TCase>.Run() => SelectedCases.Select(x => x.Case).ToList();
+    List<TCase> IRetriveStage<TCase, TOutput>.Run() => SelectedCases.Select(x => x.Case).ToList();
     
     TCase IRetainStage<TCase>.Run() => ResultCase.Case;
 
-    TCase IReuseStage<TCase>.Run() => ResultCase.Case;
+    TCase IReuseStage<TCase, TOutput>.Run() => ResultCase.Case;
 
     TCase IReviseStage<TCase>.Run() => ResultCase.Case;
 

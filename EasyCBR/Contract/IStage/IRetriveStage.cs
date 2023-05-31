@@ -7,7 +7,7 @@ namespace EasyCBR.Contract.IStage;
 /// Represents Retrive stage result.
 /// </summary>
 /// <typeparam name="TCase"></typeparam>
-public interface IRetriveStage<TCase>
+public interface IRetriveStage<TCase, TOutput>
     where TCase : class
 {
     /// <summary>
@@ -15,7 +15,7 @@ public interface IRetriveStage<TCase>
     /// </summary>
     /// <param name="chooseType">Chooses the way to select case</param>
     /// <returns></returns>
-    IReuseStage<TCase> Reuse(SelectType selectType = SelectType.MaxSimilarity);
+    IReuseStage<TCase, TOutput> Reuse(SelectType selectType = SelectType.MaxSimilarity);
 
     /// <summary>
     /// Runs the stage

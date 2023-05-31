@@ -18,7 +18,7 @@ public abstract class SimilarityFunction
     internal abstract int Weight { get; set; }
     internal abstract List<double> Scores { get; set; }
 
-    internal void InvokeCore<TCase>(CBR<TCase> cbr, string propertyName) where TCase : class
+    internal void InvokeCore<TCase, TOutput>(CBR<TCase, TOutput> cbr, string propertyName) where TCase : class
     {
         if (cbr == null)
             throw new ArgumentNullException(nameof(cbr));

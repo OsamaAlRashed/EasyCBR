@@ -4,10 +4,10 @@ namespace EasyCBR.IO;
 
 public static class CBRExtensions
 {
-    public static CBR<TCase> Create<TCase>(this CBR<TCase> cbr, string path)
+    public static CBR<TCase, TOutput> Create<TCase, TOutput>(this CBR<TCase, TOutput> cbr, string path)
         where TCase : class
     {
-        CBR<TCase>.Init(cbr, new List<TCase>());
+        CBR<TCase, TOutput>.Init(cbr, new List<TCase>());
         cbr.FilePath = path;
 
         cbr.Cases = IOHelpers.ReadCsvFile<TCase>(path);
@@ -15,7 +15,7 @@ public static class CBRExtensions
         return cbr;
     }
 
-    public static IRetainStage<TCase> Retain<TCase>(this CBR<TCase> cbr)
+    public static IRetainStage<TCase> Retain<TCase, TOutput>(this CBR<TCase, TOutput> cbr)
         where TCase : class
     {
         IOHelpers.InsertRecordToCsvFile(cbr.ResultCase.Case, cbr.FilePath);

@@ -51,7 +51,7 @@ public class Benchmark
         { 0.2, 0.3, 0.1, 1.0 }
     };
 
-    private readonly IRetriveStage<Laptop> laptopsCBR = CBR<Laptop>
+    private readonly IRetriveStage<Laptop, decimal> laptopsCBR = CBR<Laptop, decimal>
             .Create(_laptops)
             .Output(order => order.Price)
             .SetSimilarityFunctions

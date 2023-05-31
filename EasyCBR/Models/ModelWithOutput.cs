@@ -2,9 +2,9 @@
 
 namespace EasyCBR.Models;
 
-public class ModelWithOutput<TCase>
+public class ModelWithOutput<TCase, TOutput>
     where TCase : class
 {
-    public CBR<TCase> Case { get; set; }
+    public CBR<TCase, TOutput> Case { get; set; }
     public MemberInfo Output { get; set; }
 }
