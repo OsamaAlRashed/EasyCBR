@@ -1,7 +1,7 @@
 ﻿namespace EasyCBR.Contract.IStage;
 
 /// <summary>
-/// Represents Retain Stage result.
+/// Represents a Retain stage result.
 /// </summary>
 /// <typeparam name="TCase"></typeparam>
 public interface IRetainStage<TCase>

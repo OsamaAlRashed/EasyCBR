@@ -4,6 +4,7 @@
 /// Represents Reuse stage result.
 /// </summary>
 /// <typeparam name="TCase"></typeparam>
+/// <typeparam name="TOutput"></typeparam>
 public interface IReuseStage<TCase, TOutput>
     where TCase : class
 {

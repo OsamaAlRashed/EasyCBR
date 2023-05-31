@@ -14,8 +14,9 @@ public static class CBRExtensions
     /// <summary>
     /// Determines the output property.
     /// </summary>
-    /// <typeparam name="TCase">Case</typeparam>
-    /// <typeparam name="TProperty">Property</typeparam>
+    /// <typeparam name="TCase">A case type</typeparam>
+    /// <typeparam name="TProperty">A property type</typeparam>
+    /// <typeparam name="TOutput">A output type</typeparam>
     /// <param name="entity">Instance of CBR</param>
     /// <param name="propertyExpression">Select the property</param>
     /// <returns>Returns CBR instance eith a selected case.</returns>
@@ -39,7 +40,8 @@ public static class CBRExtensions
     /// <summary>
     /// Set Similarity functions to properties.
     /// </summary>
-    /// <typeparam name="TCase">Case</typeparam>
+    /// <typeparam name="TCase">A case type</typeparam>
+    /// <typeparam name="TOutput">A output type</typeparam>
     /// <param name="entityWithOutput">The return type of output.</param>
     /// <param name="pairs">Each propetry with its similarity function.</param>
     /// <returns></returns>

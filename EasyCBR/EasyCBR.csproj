@@ -8,6 +8,7 @@
     <Version>1.0.3</Version>
     <Description>The easy way to implement CBR (Case Based Reasoning) in C#.</Description>
     <RepositoryUrl>https://github.com/OsamaAlRashed/EasyCBR</RepositoryUrl>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -23,6 +24,10 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Exceptions\" />
   </ItemGroup>
 
 </Project>
