@@ -1,4 +1,4 @@
-# EasyCBR 1.0.3
+# EasyCBR 1.0.4
 
 
   <table>
