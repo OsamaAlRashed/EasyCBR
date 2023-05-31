@@ -37,12 +37,18 @@ Func<string, string, double> cpuSimilarity = (value, queryValue) =>
     return result;
 };
 
+Table<Manufacture> _manufactureSimilarity = new()
+{
+    [Manufacture.Dell, Manufacture.Hp] = 0.5,
+    [Manufacture.Asus, Manufacture.Dell] = 0.5
+};
+
 var result = CBR<Laptop, decimal>
     .Create(laptopList)
     .Output(order => order.Price)
     .SetSimilarityFunctions
     (
-        (nameof(Laptop.Manufacture), new TableSimilarityFunction<Manufacture>()),
+        (nameof(Laptop.Manufacture), new TableSimilarityFunction<Manufacture>(_manufactureSimilarity)),
         (nameof(Laptop.RAM), new LinearSimilarityFunction<int>(4, 32, 2)),
         (nameof(Laptop.SSD), new BasicSimilarityFunction<bool>(2)),
         (nameof(Laptop.CPU), new CustomSimilarityFunction<string>(cpuSimilarity, 4))

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EasyCBR.Models;
+namespace EasyCBR;
 
 public class Table<TKey> : Dictionary<(TKey, TKey), double>
     where TKey : Enum
