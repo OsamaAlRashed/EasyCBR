@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace EasyCBR.Helpers;
@@ -24,5 +25,13 @@ internal static class HelperMethods
 
     internal static Type GetTypeFromMemberInfo(this MemberInfo member)
         => (member as PropertyInfo).PropertyType;
+
+    internal static Dictionary<string, TProperty> EnumToDictionary<TProperty>()
+    {
+        var names = Enum.GetNames(typeof(TProperty)).Cast<string>();
+        var values = Enum.GetValues(typeof(TProperty)).Cast<TProperty>();
+
+        return names.Zip(values).ToDictionary(k => k.First, v => v.Second);
+    }
 
 }

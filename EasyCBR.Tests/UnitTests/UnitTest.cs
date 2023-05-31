@@ -20,7 +20,7 @@ public class UnitTest
     public void Test1()
     {
         //Arrange
-        var cbr = CBR<Order, int>.Create(orders);
+        var cbr = CBR<Order, decimal>.Create(orders);
 
         //Act
         var expected = 5;
@@ -33,7 +33,7 @@ public class UnitTest
     public void Test2()
     {
         //Arrange
-        var create = CBR<Order, int>.Create;
+        var create = CBR<Order, decimal>.Create;
 
         //Act
 
@@ -45,7 +45,7 @@ public class UnitTest
     public void Test3()
     {
         //Arrange
-        var create = CBR<Order, int>.Create;
+        var create = CBR<Order, decimal>.Create;
 
         //Act
 
@@ -57,7 +57,7 @@ public class UnitTest
     public void Test4()
     {
         //Arrange
-        var cbr = CBR<Order, int>.Create(orders).Output(x => x.Price);
+        var cbr = CBR<Order, decimal>.Create(orders).Output(x => x.Price);
 
         //Act
         var expected = nameof(Order.Price);
@@ -70,7 +70,7 @@ public class UnitTest
     public void Test5()
     {
         //Arrange
-        var cbr = CBR<Order, int>
+        var cbr = CBR<Order, decimal>
             .Create(orders)
             .Output(x => x.Price)
             .SetSimilarityFunctions((nameof(Order.CustomerName), new BasicSimilarityFunction<string>()));
@@ -89,7 +89,7 @@ public class UnitTest
         //Act
 
         //Assert
-        Assert.Throws<ArgumentException>(() => CBR<Order, int>
+        Assert.Throws<ArgumentException>(() => CBR<Order, decimal>
             .Create(orders)
             .Output(x => x.Price)
             .SetSimilarityFunctions());
@@ -103,7 +103,7 @@ public class UnitTest
         //Act
 
         //Assert
-        Assert.Throws<ArgumentNullException>(() => CBR<Order, int>
+        Assert.Throws<ArgumentNullException>(() => CBR<Order, decimal>
             .Create(orders)
             .Output(x => x.Price)
             .SetSimilarityFunctions(null));
@@ -117,7 +117,7 @@ public class UnitTest
         //Act
 
         //Assert
-        Assert.Throws<ArgumentException>(() => CBR<Order, int>
+        Assert.Throws<ArgumentException>(() => CBR<Order, decimal>
             .Create(orders)
             .Output(x => x.Price)
             .SetSimilarityFunctions(
@@ -133,7 +133,7 @@ public class UnitTest
         //Act
 
         //Assert
-        Assert.Throws<ArgumentException>(() => CBR<Order, int>
+        Assert.Throws<ArgumentException>(() => CBR<Order, decimal>
             .Create(orders)
             .Output(x => x.Price)
             .SetSimilarityFunctions(
@@ -145,7 +145,7 @@ public class UnitTest
     public void Test10()
     {
         //Arrange
-        var cbr = CBR<Order, int>
+        var cbr = CBR<Order, decimal>
             .Create(orders)
             .Output(x => x.Price)
             .SetSimilarityFunctions(
@@ -165,7 +165,7 @@ public class UnitTest
         //Act
 
         //Assert
-        Assert.Throws<ArgumentNullException>(() => CBR<Order, int>
+        Assert.Throws<ArgumentNullException>(() => CBR<Order, decimal>
             .Create(orders)
             .Output(x => x.Price)
             .SetSimilarityFunctions(
@@ -181,7 +181,7 @@ public class UnitTest
         //Act
 
         //Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => CBR<Order, int>
+        Assert.Throws<ArgumentOutOfRangeException>(() => CBR<Order, decimal>
             .Create(orders)
             .Output(x => x.Price)
             .SetSimilarityFunctions(
@@ -193,7 +193,7 @@ public class UnitTest
     public void Test13()
     {
         //Arrange
-        var cbr = CBR<Order, int>
+        var cbr = CBR<Order, decimal>
             .Create(orders)
             .Output(x => x.Price)
             .SetSimilarityFunctions(
@@ -214,7 +214,7 @@ public class UnitTest
         //Act
 
         //Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => CBR<Order, int>
+        Assert.Throws<ArgumentOutOfRangeException>(() => CBR<Order, decimal>
             .Create(orders)
             .Output(x => x.Price)
             .SetSimilarityFunctions(

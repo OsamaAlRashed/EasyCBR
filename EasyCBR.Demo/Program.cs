@@ -1,7 +1,9 @@
 ﻿using EasyCBR;
 using EasyCBR.Enums;
 using EasyCBR.Helpers;
+using EasyCBR.Models;
 using EasyCBR.SimilarityFunctions;
+using System.Net.Http.Headers;
 
 var laptopList = new List<Laptop>()
 {
@@ -35,20 +37,12 @@ Func<string, string, double> cpuSimilarity = (value, queryValue) =>
     return result;
 };
 
-var tableManyfactureSimilarity = new double[4, 4]
-{
-    { 1.0, 0.5, 0.7, 0.2 },
-    { 0.5, 1.0, 0.3, 0.3 },
-    { 0.7, 0.3, 1.0, 0.1 },
-    { 0.2, 0.3, 0.1, 1.0 }
-};
-
 var result = CBR<Laptop, decimal>
     .Create(laptopList)
     .Output(order => order.Price)
     .SetSimilarityFunctions
     (
-        (nameof(Laptop.Manufacture), new TableSimilarityFunction<Manufacture>(tableManyfactureSimilarity)),
+        (nameof(Laptop.Manufacture), new TableSimilarityFunction<Manufacture>()),
         (nameof(Laptop.RAM), new LinearSimilarityFunction<int>(4, 32, 2)),
         (nameof(Laptop.SSD), new BasicSimilarityFunction<bool>(2)),
         (nameof(Laptop.CPU), new CustomSimilarityFunction<string>(cpuSimilarity, 4))

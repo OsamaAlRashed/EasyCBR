@@ -1,7 +1,9 @@
-﻿using EasyCBR.SimilarityFunctions.Base;
+﻿using EasyCBR.Enums;
+using EasyCBR.Helpers;
+using EasyCBR.Models;
+using EasyCBR.SimilarityFunctions.Base;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace EasyCBR.SimilarityFunctions;
 
@@ -12,54 +14,38 @@ namespace EasyCBR.SimilarityFunctions;
 public sealed class TableSimilarityFunction<TProperty> : SimilarityFunction
     where TProperty : Enum
 {
-    private double[,] _similarityMatrix;
+    private Table<TProperty> _similarityTable;
+    private Dictionary<string, TProperty> _enumAsDictionary = HelperMethods.EnumToDictionary<TProperty>();
+
     internal override int Weight { get; set; }
     internal override List<double> Scores { get; set; }
 
-    internal Dictionary<object, int> EnumIndexes = Enum.GetValues(typeof(TProperty)).Cast<object>()
-        .Select((value, i) => new { index = i, value = value })
-        .ToDictionary(x => x.value, x => x.index);
-
-    public TableSimilarityFunction(int weight = 1) : base(weight)
+    public TableSimilarityFunction(int weight = 1) : base(weight) 
     {
-        Init();
+        _similarityTable = new Table<TProperty>();
     }
 
-    public TableSimilarityFunction(double[,] matrix, int weight = 1) : base(weight)
+    public TableSimilarityFunction(
+        Table<TProperty> similarityTable,
+        int weight = 1
+        ) : base(weight)
     {
-        Init();
-        _similarityMatrix = matrix;
-    }
-
-    private void Init()
-    {
-        _similarityMatrix = new double[EnumIndexes.Count, EnumIndexes.Count];
-
-        for (int i = 0; i < EnumIndexes.Count; i++)
-        {
-            for (int j = 0; j < EnumIndexes.Count; j++)
-            {
-                if (i == j)
-                    _similarityMatrix[i, j] = 1.0;
-                else
-                    _similarityMatrix[i, j] = 0.0;
-            }
-        }
+        _similarityTable = similarityTable;
     }
 
     internal override double Invoke<TCase>(object value, object newValue)
         where TCase : class
     {
-        if(!EnumIndexes.TryGetValue(value, out int index))
+        if(!_enumAsDictionary.TryGetValue(value.ToString(), out TProperty enumValue))
         {
             throw new ArgumentException(nameof(value));
         }
 
-        if (!EnumIndexes.TryGetValue(newValue, out int newIndex))
+        if (!_enumAsDictionary.TryGetValue(newValue.ToString(), out TProperty enumNewValue))
         {
-            throw new ArgumentException(nameof(newValue));
+            throw new ArgumentException(nameof(enumNewValue));
         }
 
-        return _similarityMatrix[index, newIndex];
+        return _similarityTable[enumValue, enumNewValue];
     }
 }
