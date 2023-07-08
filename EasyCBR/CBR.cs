@@ -1,4 +1,4 @@
-﻿using EasyCBR.Contract.IStage;
+﻿using EasyCBR.Abstractions;
 using EasyCBR.Enums;
 using EasyCBR.Models;
 using EasyCBR.SimilarityFunctions.Base;

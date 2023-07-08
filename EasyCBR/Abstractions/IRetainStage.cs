@@ -1,4 +1,4 @@
-﻿namespace EasyCBR.Contract.IStage;
+﻿namespace EasyCBR.Abstractions;
 
 /// <summary>
 /// Represents a Retain stage result.

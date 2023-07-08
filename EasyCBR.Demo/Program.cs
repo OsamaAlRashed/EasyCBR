@@ -55,7 +55,7 @@ var result = CBR<Laptop, decimal>
     )
     .Retrieve(new Laptop("ModelX", Manufacture.Asus, 32, "I5_G11", true, 0), 3)
     .Reuse(SelectType.AverageValue)
-    .Revise()
+    .Revise(1.0m)
     .Retain()
     .Run();
 

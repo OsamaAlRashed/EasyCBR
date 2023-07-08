@@ -1,7 +1,7 @@
 ﻿using EasyCBR.Enums;
 using System.Collections.Generic;
 
-namespace EasyCBR.Contract.IStage;
+namespace EasyCBR.Abstractions;
 
 /// <summary>
 /// Represents Retrive stage result.

@@ -1,4 +1,4 @@
-﻿using EasyCBR.Contract.IStage;
+﻿using EasyCBR.Abstractions;
 
 namespace EasyCBR.IO;
 

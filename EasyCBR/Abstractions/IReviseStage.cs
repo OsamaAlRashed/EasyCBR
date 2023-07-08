@@ -1,10 +1,10 @@
-﻿namespace EasyCBR.Contract.IStage;
+﻿namespace EasyCBR.Abstractions;
 
 /// <summary>
 /// Represents Revise stage result.
 /// </summary>
 /// <typeparam name="TCase"></typeparam>
-public interface IReviseStage<TCase> 
+public interface IReviseStage<TCase>
     where TCase : class
 {
     /// <summary>

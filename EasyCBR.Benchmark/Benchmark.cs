@@ -1,5 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
-using EasyCBR.Contract.IStage;
+using EasyCBR.Abstractions;
 using EasyCBR.Enums;
 using EasyCBR.Helpers;
 using EasyCBR.SimilarityFunctions;
