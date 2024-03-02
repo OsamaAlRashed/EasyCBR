@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace EasyCBR.SimilarityFunctions;
 
 /// <summary>
-/// Represnts Table similarity function.
+/// Represents Table similarity function.
 /// </summary>
 /// <typeparam name="TProperty"></typeparam>
 public sealed class TableSimilarityFunction<TProperty> : SimilarityFunction

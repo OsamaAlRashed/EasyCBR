@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFrameworks>net7.0;net8.0</TargetFrameworks>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Authors>Osama Al-Rashed</Authors>
     <Company>Easy Packages</Company>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
     <Description>The easy way to implement CBR (Case Based Reasoning) in C#.</Description>
     <RepositoryUrl>https://github.com/OsamaAlRashed/EasyCBR</RepositoryUrl>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>

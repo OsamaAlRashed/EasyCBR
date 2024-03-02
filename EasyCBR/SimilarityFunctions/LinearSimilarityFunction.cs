@@ -30,9 +30,9 @@ public sealed class LinearSimilarityFunction<TProperty> : SimilarityFunction
 
     internal override double Invoke<TCase>(object value, object newValue)
     {
-        var diffrence = Math.Abs(double.Parse(value.ToString()) - double.Parse(newValue.ToString()));
+        var difference = Math.Abs(double.Parse(value.ToString()) - double.Parse(newValue.ToString()));
 
-        double result = 1 - (diffrence / _rangeLength);
+        double result = 1 - (difference / _rangeLength);
         return Math.Round(result, 2);
     }
 }

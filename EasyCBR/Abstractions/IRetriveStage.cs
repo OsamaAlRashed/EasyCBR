@@ -4,11 +4,11 @@ using System.Collections.Generic;
 namespace EasyCBR.Abstractions;
 
 /// <summary>
-/// Represents Retrive stage result.
+/// Represents Retrieve stage result.
 /// </summary>
 /// <typeparam name="TCase"></typeparam>
 /// <typeparam name="TOutput"></typeparam>
-public interface IRetriveStage<TCase, TOutput>
+public interface IRetrieveStage<TCase, TOutput>
     where TCase : class
 {
     /// <summary>

@@ -7,16 +7,16 @@ using System.Net.Http.Headers;
 
 var laptopList = new List<Laptop>()
 {
-   new Laptop("ModelX1", Manufacture.Asus, 4, "I3_G5", false, 200),
-   new Laptop("ModelX2", Manufacture.Dell, 4, "I3_G6", false, 220),
-   new Laptop("ModelX3", Manufacture.Asus, 4, "I3_G7", false, 250),
-   new Laptop("ModelX4", Manufacture.Hp, 8, "I5_G8", false, 300),
-   new Laptop("ModelX5", Manufacture.Lenovo, 8, "I5_G8", false, 280),
-   new Laptop("ModelX6", Manufacture.Dell, 16, "I5_G11", true, 500),
-   new Laptop("ModelX7", Manufacture.Lenovo, 12, "I5_G10", false, 400),
-   new Laptop("ModelX8", Manufacture.Hp, 16, "I5_G12", true, 600),
-   new Laptop("ModelX9", Manufacture.Lenovo, 32, "I5_G12", true, 650),
-   new Laptop("ModelX10", Manufacture.Asus, 16, "I5_G11", true, 450),
+   new ("ModelX1", Manufacture.Asus, 4, "I3_G5", false, 200),
+   new ("ModelX2", Manufacture.Dell, 4, "I3_G6", false, 220),
+   new ("ModelX3", Manufacture.Asus, 4, "I3_G7", false, 250),
+   new ("ModelX4", Manufacture.Hp, 8, "I5_G8", false, 300),
+   new ("ModelX5", Manufacture.Lenovo, 8, "I5_G8", false, 280),
+   new ("ModelX6", Manufacture.Dell, 16, "I5_G11", true, 500),
+   new ("ModelX7", Manufacture.Lenovo, 12, "I5_G10", false, 400),
+   new ("ModelX8", Manufacture.Hp, 16, "I5_G12", true, 600),
+   new ("ModelX9", Manufacture.Lenovo, 32, "I5_G12", true, 650),
+   new ("ModelX10", Manufacture.Asus, 16, "I5_G11", true, 450),
 };
 
 Func<string, string, double> cpuSimilarity = (value, queryValue) =>
@@ -55,7 +55,7 @@ var result = CBR<Laptop, decimal>
     )
     .Retrieve(new Laptop("ModelX", Manufacture.Asus, 32, "I5_G11", true, 0), 3)
     .Reuse(SelectType.AverageValue)
-    .Revise(1.0m)
+    .Revise()
     .Retain()
     .Run();
 

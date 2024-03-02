@@ -7,10 +7,10 @@ namespace EasyCBR.Helpers;
 
 internal static class HelperMethods
 {
-    internal static Dictionary<string, Type> GetNameAndTypeProperties<TEntiy>()
+    internal static Dictionary<string, Type> GetNameAndTypeProperties<TEntity>()
     {
         var values = new Dictionary<string, Type>();
-        var props = typeof(TEntiy).GetProperties();
+        var props = typeof(TEntity).GetProperties();
 
         foreach (PropertyInfo prop in props) 
         {

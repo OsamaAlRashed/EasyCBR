@@ -11,7 +11,7 @@ using static EasyCBR.Helpers.HelperMethods;
 namespace EasyCBR;
 
 public sealed class CBR<TCase, TOutput> :
-    IRetriveStage<TCase, TOutput>,
+    IRetrieveStage<TCase, TOutput>,
     IRetainStage<TCase>,
     IReuseStage<TCase, TOutput>,
     IReviseStage<TCase>
@@ -42,10 +42,9 @@ public sealed class CBR<TCase, TOutput> :
 
     public static CBR<TCase, TOutput> Create(List<TCase> cases)
     {
-        if(cases == null) 
-            throw new ArgumentNullException(nameof(cases));
+        ArgumentNullException.ThrowIfNull(cases);
 
-        if(cases.Count == 0)
+        if (cases.Count == 0)
             throw new ArgumentOutOfRangeException(nameof(cases));
 
         var cbr = new CBR<TCase, TOutput>();
@@ -66,7 +65,7 @@ public sealed class CBR<TCase, TOutput> :
     #endregion
 
     #region 4R
-    public IRetriveStage<TCase, TOutput> Retrieve(TCase @case, int count)
+    public IRetrieveStage<TCase, TOutput> Retrieve(TCase @case, int count)
     {
         if (count <= 0 || Cases.Count < count)
             throw new ArgumentOutOfRangeException(nameof(count));
@@ -149,7 +148,7 @@ public sealed class CBR<TCase, TOutput> :
 
     #region Run Methods
 
-    List<TCase> IRetriveStage<TCase, TOutput>.Run() => SelectedCases.Select(x => x.Case).ToList();
+    List<TCase> IRetrieveStage<TCase, TOutput>.Run() => SelectedCases.Select(x => x.Case).ToList();
     
     TCase IRetainStage<TCase>.Run() => ResultCase.Case;
 
